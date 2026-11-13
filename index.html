@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Choosing a Window Treatment Company</title>
+<style>
+  body{font-family:Arial,Helvetica,sans-serif;max-width:520px;margin:64px auto;padding:0 16px;color:#202124;text-align:center;background:#fff}
+  a.btn{display:none;margin-top:20px;padding:14px 28px;background:#673ab7;color:#fff;border-radius:6px;text-decoration:none;font-size:18px}
+</style>
+</head>
+<body>
+<h2>Choosing a Window Treatment Company</h2>
+<p id="msg">Loading the survey&hellip;</p>
+<a class="btn" id="go" href="#">Start the survey</a>
+<script>
+// Each visitor is sent to one of three versions (A, B, C) of the survey.
+// Assignment: randomized blocks of three (each block is a random order of A, B, C),
+// kept by a Google Apps Script counter. If that service cannot be reached,
+// the page falls back to a simple random choice.
+var URLS = [
+  "https://docs.google.com/forms/d/e/1FAIpQLSc4IU5w_uJxQAhVnMemghNNtfG8WaB6xL6nQm8ztqXCuKav5w/viewform",
+  "https://docs.google.com/forms/d/e/1FAIpQLSee6o4GtkZ_4XvojNo6kRZw0fhm27CK6rgZg_eySt5rqqRLIg/viewform",
+  "https://docs.google.com/forms/d/e/1FAIpQLSfm54xTpqCG2Z16-fcDNS6VK5J9wImibIEwD4_SIs3duEH5uQ/viewform"
+];
+var ASSIGN = "https://script.google.com/macros/s/AKfycbzL-zFkMMqm8qgThlsVbACHHY9b4cb0UZouKbSbk4_NTL-OuNK13y95D-907R2vVOjP/exec?a=1";
+var done = false;
+function go(u) {
+  if (done) return; done = true;
+  var b = document.getElementById("go");
+  b.href = u; b.style.display = "inline-block";
+  document.getElementById("msg").textContent = "If the survey does not open, tap the button below.";
+  location.replace(u);
+}
+var timer = setTimeout(function () { go(URLS[Math.floor(Math.random() * 3)]); }, 8000);
+fetch(ASSIGN, {credentials: "omit", cache: "no-store"})
+  .then(function (r) { return r.json(); })
+  .then(function (d) { if (URLS.indexOf(d.url) >= 0) { clearTimeout(timer); go(d.url); } else { throw 0; } })
+  .catch(function () { clearTimeout(timer); go(URLS[Math.floor(Math.random() * 3)]); });
+</script>
+</body>
+</html>
